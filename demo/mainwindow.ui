@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>tenduke::qt::demo::MainWindow</class>
+ <widget class="QMainWindow" name="tenduke::qt::demo::MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="btnLogin">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>135</y>
+      <width>160</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Login</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnLoadUserInfo">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>225</y>
+      <width>160</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load userinfo</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnCheckoutLicenses">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>315</y>
+      <width>160</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Checkout licenses</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnRefreshAccessToken">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>405</y>
+      <width>160</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Refresh
+OAuth token</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

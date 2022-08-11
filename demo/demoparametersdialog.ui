@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>tenduke::qt::demo::DemoParametersDialog</class>
+ <widget class="QMainWindow" name="tenduke::qt::demo::DemoParametersDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>788</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>760</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>OAuth parameters</string>
+    </property>
+    <widget class="QLineEdit" name="authorizationEndpoint">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>40</y>
+       <width>480</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>https://genco.10duke.com/user/oauth20/authz</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblAuthzEndpoint">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>230</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Authorization Endpoint URL</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblTokenEndpoint">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>230</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Token Endpoint URL</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="tokenEndpoint">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>80</y>
+       <width>480</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>https://genco.10duke.com/user/oauth20/token</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="redirectUri">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>120</y>
+       <width>480</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>tenduke://callback</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="clientIdentifier">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>160</y>
+       <width>480</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>QTDemo</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblRedirectUri">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>120</y>
+       <width>230</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Redirect URI</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblClientIdentifier">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>160</y>
+       <width>230</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Client id</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="clientSecret">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>200</y>
+       <width>480</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>FQdL!XSYYrQ7-zeiCe</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblClientSecret">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>200</y>
+       <width>230</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Client secret</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>590</y>
+      <width>761</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Licensing parameters</string>
+    </property>
+    <widget class="QLabel" name="lblLicenseEndpoint">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>230</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Endpoint URL</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="licenseEndpoint">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>40</y>
+       <width>480</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>https://genco.10duke.com/authz/</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblHardwareId">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>230</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Hardware ID</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="hardwareId">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>80</y>
+       <width>480</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>simulated-hardware-id</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>270</y>
+      <width>760</width>
+      <height>320</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>OpenId Connect parameters</string>
+    </property>
+    <widget class="QLabel" name="lblUserinfoEndpoint">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>230</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Userinfo Endpoint URL</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="userinfoEndpoint">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>30</y>
+       <width>480</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>https://genco.10duke.com/userinfo/</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="issuer">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>70</y>
+       <width>480</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>https://genco.10duke.com</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblIssuer">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>70</y>
+       <width>230</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Issuer</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblVerificationKey">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>110</y>
+       <width>230</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Id Token Verification Key</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QPlainTextEdit" name="verificationKey">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>110</y>
+       <width>480</width>
+       <height>200</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="plainText">
+      <string>-----BEGIN PUBLIC KEY-----
+MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAywVSSuHKmyNrcT8JArxo
+IqTuWdCvG2R78p1Osdav8ivjQWqDnjR37tt7L+U+sopV4ka4gUQVi7Ie87l2cJwh
+sJ6uAQWfp6K7r+H/yH+ak+F8EvcWLFNqRjbvgAu0MqSt16bkZX01AanBca3yioZ+
+Ihe7DryKSbR1n8IMU7DRUiZzB4c9qdPphmDwxzryaiTkE1QJyXGjpSdvwwIdXE9u
+XE12zSeR2+CRKWTPZsnRBKpSDdrEwE8nSRW5XmDppnpoAvb6YI7ULtXZN354atbH
+sC1s+siHsjD7zB//cUzsRtge4YCTOoIs4thirizP3uXg8xJSs1Quie1GvZt0ufwl
+jMQnbBR7Le1ctV7sCZFom4XJGewGpnXQP9TBBpofH1RhjmBBRyruvbX3xGj2mKpi
+hy6k3FzoxZ580Pv1KGo1CYjLgfXFSmwnq/MJ6bE1wR9rmexOE1b2laWsTbTdpZB4
+/3mHGQ1yd5w+7ZjOQ1/K0g5FHm5yKK9cJSvQihN/BpGN5YhvwkpjhAhJlF+csLg4
+DGXl5GxnTfP1ZSUywOP2Da4PzpaghsDJpkBkh6rKDK+mJ9v0He1BfvhxIqAjVnur
+IRZriZ6mXwTM7C9v30IBIgnadgLkyptuj+/1F3Z3m2+Ix6uLpZGUQpWVgMcC2uM5
+kcU6rWjrfEfAVM23axgy7c0CAwEAAQ==
+-----END PUBLIC KEY-----
+</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="btnOK">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>730</y>
+      <width>103</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>OK</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

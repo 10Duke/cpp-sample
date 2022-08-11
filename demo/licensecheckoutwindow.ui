@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>tenduke::qt::demo::LicenseCheckoutWindow</class>
+ <widget class="QMainWindow" name="tenduke::qt::demo::LicenseCheckoutWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>760</width>
+      <height>580</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Licenses</string>
+    </property>
+    <widget class="QPushButton" name="btnCheckout">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>40</y>
+       <width>120</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Checkout</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="licensedItemName">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>40</y>
+       <width>250</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>qt-demo-item-1</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblLicensedItemName">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>40</y>
+       <width>150</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Licensed item name</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="tblLicense">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>130</y>
+       <width>341</width>
+       <height>192</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="tblFailedItems">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>370</y>
+       <width>720</width>
+       <height>190</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblItemsCheckedOut">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>100</y>
+       <width>160</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Items checked out</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblItemsFailed">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>340</y>
+       <width>91</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Failed items</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
