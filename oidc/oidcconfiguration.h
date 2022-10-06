@@ -21,14 +21,16 @@ public:
      *  @param verificationKey key to use to verify the ID-token signature
      */
     OIDCConfiguration(
-            const std::string issuer,
-            std::shared_ptr<const tenduke::crypto::PublicKey> verificationKey
-    ) : issuer(issuer), verificationKey(verificationKey), algorithm("sha256")
+            const std::string &issuer,
+            std::shared_ptr<const tenduke::crypto::PublicKey> verificationKey,
+            const std::string &userinfoEndpoint
+    ) : issuer(issuer), verificationKey(verificationKey), algorithm("sha256"), userinfoEndpoint(userinfoEndpoint)
     {}
 
     const std::string issuer;
     const std::shared_ptr<const tenduke::crypto::PublicKey> verificationKey;
     const std::string algorithm;
+    const std::string userinfoEndpoint;
 };
 
 

@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network networkauth webengine webenginewidgets widgets
+QT       += core gui network webengine webenginewidgets widgets
+#QT       += core gui network widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,8 +31,10 @@ SOURCES += \
     crypto/createlibcryptoexception.cpp \
     crypto/libcryptomessagedigest.cpp \
     crypto/publickey.cpp \
+    crypto/publickeytopem.cpp \
     crypto/rsapublickeyfrompemstring.cpp \
     crypto/sha256utl.cpp \
+    demo/autodiscoveredparameters.cpp \
     demo/basewindow.cpp \
     demo/demoparametersdialog.cpp \
     demo/licensecheckoutwindow.cpp \
@@ -51,6 +54,7 @@ SOURCES += \
     json/cjsonobject.cpp \
     json/cjsonparser.cpp \
     json/jsonutils.cpp \
+    jwks/jwkstopublickey.cpp \
     jwt/defaultjwtparser.cpp \
     jwt/fixedkeyjwtsignaturevalidator.cpp \
     jwt/jwt.cpp \
@@ -71,6 +75,7 @@ SOURCES += \
     oauth/oauthpkcerequest.cpp \
     oauth/oauthstateimpl.cpp \
     oauth/oauthtokenrequest.cpp \
+    oidc/autodiscovery.cpp \
     oidc/createdefaultoidcclient.cpp \
     oidc/oidcclient.cpp \
     oidc/oidcrequest.cpp \
@@ -90,6 +95,7 @@ SOURCES += \
     qt/net/qturlencoder.cpp \
     qt/net/qturlparser.cpp \
     qt/oidc/createqtoidcclient.cpp \
+    qt/oidc/qtautodiscoveryrequest.cpp \
     qt/oidc/qtoidcclient.cpp \
     qt/utl/exceptiontostringlist.cpp \
     qt/utl/qtbase64decoder.cpp \
@@ -98,6 +104,7 @@ SOURCES += \
     qt/webengine/customschemehandler.cpp \
     time/defaultclock.cpp \
     tst/testdefaultlicensing.cpp \
+    tst/testdefaultlicensing2.cpp \
     utl/base64test.cpp \
     utl/defaultbase64decoder.cpp \
     utl/defaultbase64encoder.cpp \
@@ -105,7 +112,7 @@ SOURCES += \
     utl/random/insecurerandombytes.cpp \
     utl/random/randomurlsafestring.cpp \
     utl/simplebuffer.cpp
- 
+
 HEADERS += \
     crypto/asymmetricmessagedigest.h \
     crypto/asymmetricmessagedigestfactory.h \
@@ -116,8 +123,10 @@ HEADERS += \
     crypto/messagedigestverifier.h \
     crypto/messagedigestverifierfactory.h \
     crypto/publickey.h \
+    crypto/publickeytopem.h \
     crypto/rsapublickeyfrompemstring.h \
     crypto/sha256utl.h \
+    demo/autodiscoveredparameters.h \
     demo/basewindow.h \
     demo/demoparametersdialog.h \
     demo/licensecheckoutwindow.h \
@@ -160,6 +169,8 @@ HEADERS += \
     json/jsonparsingexception.h \
     json/jsonstring.h \
     json/jsonutils.h \
+    jwks/jwksexception.h \
+    jwks/jwkstopublickey.h \
     jwt/defaultjwtparser.h \
     jwt/fixedkeyjwtsignaturevalidator.h \
     jwt/jwt.h \
@@ -196,7 +207,9 @@ HEADERS += \
     net/urlencoder.h \
     net/urlexception.h \
     net/urlparser.h \
+    oauth/oauthbackendconfiguration.h \
     oauth/oauthclient.h \
+    oauth/oauthclientconfiguration.h \
     oauth/oauthconfiguration.h \
     oauth/oauthexception.h \
     oauth/oauthpkceflow.h \
@@ -207,6 +220,7 @@ HEADERS += \
     oauth/oauthstateimpl.h \
     oauth/oauthtokenrequest.h \
     oauth/oauthtokenresponse.h \
+    oidc/autodiscovery.h \
     oidc/createdefaultoidcclient.h \
     oidc/oidcclient.h \
     oidc/oidcconfiguration.h \
@@ -235,6 +249,7 @@ HEADERS += \
     qt/oauth/qtoauthconfig.h \
     qt/oauth/qtoauthstate.h \
     qt/oidc/createqtoidcclient.h \
+    qt/oidc/qtautodiscoveryrequest.h \
     qt/oidc/qtoidcclient.h \
     qt/oidc/qtoidcconfig.h \
     qt/oidc/qtoidcstate.h \
@@ -247,6 +262,7 @@ HEADERS += \
     time/clock.h \
     time/defaultclock.h \
     tst/testdefaultlicensing.h \
+    tst/testdefaultlicensing2.h \
     utl/base64decoder.h \
     utl/base64encoder.h \
     utl/base64test.h \
@@ -258,13 +274,14 @@ HEADERS += \
     utl/random/randombytes.h \
     utl/random/randomurlsafestring.h \
     utl/simplebuffer.h
- 
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
+    demo/autodiscoveredparameters.ui \
     demo/demoparametersdialog.ui \
     demo/licensecheckoutwindow.ui \
     demo/mainwindow.ui \

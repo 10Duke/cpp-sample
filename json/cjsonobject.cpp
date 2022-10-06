@@ -42,7 +42,7 @@ std::shared_ptr<json::JSONElement> cjson::CjsonObject::removeProperty(const std:
 
         // Detach the property from the cJSON-object.
         // The item returned by the call should the same within the "property".
-        cJSON * item = cJSON_DetachItemFromObjectCaseSensitive(element, propertyName.c_str());
+        cJSON_DetachItemFromObjectCaseSensitive(element, propertyName.c_str());
 
         // Make the element "root": It is now a self-contained and should be de-allocated when
         // out-of-scope:

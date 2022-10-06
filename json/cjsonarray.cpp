@@ -15,6 +15,7 @@ ns::CjsonArray::~CjsonArray()
 }
 
 const std::vector<std::shared_ptr<nsapi::JSONElement>> & ns::CjsonArray::getValues()
+const
 {
     return *(values.get());
 }

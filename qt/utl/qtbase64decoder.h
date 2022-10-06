@@ -13,12 +13,18 @@ class QtBase64Decoder : public tenduke::utl::Base64Decoder
 {
     // tenduke::utl::Base64Decoder interface
 public:
+    virtual std::unique_ptr<tenduke::utl::BinaryData> decode(const std::string &base64EncodedString) const override;
+    virtual std::unique_ptr<tenduke::utl::BinaryData> decode(
+            const char *base64EncodedString,
+            const size_t numBytes
+    ) const override;
     virtual std::string decodeString(const std::string &base64EncodedString) const override;
     virtual std::string decodeString(
                 const char *base64EncodedString,
                 const size_t numBytes
     ) const override;
 
+    virtual std::unique_ptr<tenduke::utl::BinaryData> decodeUrlSafe(const std::string &base64EncodedString) const override;
     virtual std::unique_ptr<tenduke::utl::BinaryData> decodeUrlSafe(
             const char *base64EncodedString,
             const size_t numBytes

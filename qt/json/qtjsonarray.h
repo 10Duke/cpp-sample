@@ -26,7 +26,7 @@ public:
     // tenduke::json::JSONArray implementation
     virtual bool isEmpty() const override;
     virtual size_t getSize() const override;
-    virtual const std::vector<std::shared_ptr<JSONElement>> & getValues() override;
+    virtual const std::vector<std::shared_ptr<JSONElement>> & getValues() const override;
 
 private:
     QJsonArray arrayElement;

@@ -19,8 +19,6 @@ namespace crypto = tenduke::crypto;
 namespace libcrypto = tenduke::crypto::libcrypto;
 namespace http = tenduke::http;
 namespace jwt = tenduke::jwt;
-namespace xdoauth = tenduke::oauth;
-namespace xdoidc = tenduke::oauth::oidc;
 namespace qtnet = tenduke::qt::net;
 namespace qtoidc = tenduke::qt::oidc;
 namespace qtutl = tenduke::qt::utl;
@@ -28,8 +26,20 @@ namespace qtjson = tenduke::qt::json;
 namespace rnd = tenduke::utl::random;
 namespace xdjson = tenduke::json;
 namespace xdnet = tenduke::net;
+namespace xdoauth = tenduke::oauth;
+namespace xdoidc = tenduke::oauth::oidc;
 namespace xdutl = tenduke::utl;
 namespace xdtime = tenduke::time;
+
+std::unique_ptr<const tenduke::oauth::oidc::AutoDiscovery> qtoidc::createAutoDiscovery(std::shared_ptr<tenduke::http::HTTPClient> httpClient)
+{
+    return std::unique_ptr<const xdoidc::AutoDiscovery>(new xdoidc::AutoDiscovery(
+        std::shared_ptr<const xdutl::Base64Decoder>(new qtutl::QtBase64Decoder()),
+        httpClient,
+        std::shared_ptr<const xdjson::JSONParser>(new qtjson::QtJSONParser())
+    ));
+}
+
 
 std::unique_ptr<qtoidc::QtOIDCClient> qtoidc::createQtOIDCClient(
     std::shared_ptr<xdoauth::OAuthConfiguration> oauthConfiguration,
@@ -123,7 +133,8 @@ std::shared_ptr<qtoidc::QtOIDCClient> qtoidc::createOidcClient(
                 )),
                 std::shared_ptr<xdoidc::OIDCConfiguration>(new xdoidc::OIDCConfiguration(
                         oidcConfiguration->issuer.toStdString(),
-                        std::move(idTokenValidationKey)
+                        std::move(idTokenValidationKey),
+                        oidcConfiguration->getUserinfoEndpoint().toString().toStdString()
                 )),
                 httpClient
     ));

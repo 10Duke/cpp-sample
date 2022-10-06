@@ -19,6 +19,11 @@ public:
     )
         : tenduke::oauth::OAuthException(phase, error, errorDescription)
     {}
+
+    OIDCException(const std::string &errorDescription)
+        : OIDCException(tenduke::oauth::OAuthException::Phase::NONE, "", errorDescription)
+    {}
+
 };
 
 

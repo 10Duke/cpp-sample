@@ -1,6 +1,5 @@
 #include "./rsapublickeyfrompemstring.h"
 
-#include "./cryptoexception.h"
 #include "./createlibcryptoexception.h"
 
 #include <memory>

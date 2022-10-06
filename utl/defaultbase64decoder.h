@@ -16,12 +16,18 @@ class DefaultBase64Decoder : public Base64Decoder
 public:
     virtual ~DefaultBase64Decoder() {}
 
+    virtual std::unique_ptr<BinaryData> decode(const std::string &base64EncodedString) const override;
+    virtual std::unique_ptr<BinaryData> decode(
+            const char *base64EncodedString,
+            const size_t numBytes
+    ) const override;
     virtual std::string decodeString(const std::string &base64EncodedString) const override;
     virtual std::string decodeString(
                 const char *base64EncodedString,
                 const size_t numBytes
     ) const override;
 
+    virtual std::unique_ptr<BinaryData> decodeUrlSafe(const std::string &base64EncodedString) const override;
     virtual std::unique_ptr<BinaryData> decodeUrlSafe(
             const char *base64EncodedString,
             const size_t numBytes

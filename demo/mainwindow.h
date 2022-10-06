@@ -1,9 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "./autodiscoveredparameters.h"
 #include "./licensecheckoutwindow.h"
 #include "./logindialog.h"
-#include "./demoparametersdialog.h"
 #include "./userinfowindow.h"
 
 #include "http/httpclient.h"
@@ -69,7 +69,7 @@ private:
 
     tenduke::qt::demo::LicenseCheckoutWindow * licenseCheckout;
     tenduke::qt::demo::LoginDialog * loginDialog;
-    tenduke::qt::demo::DemoParametersDialog* parametersDialog;
+    tenduke::qt::demo::AutoDiscoveredParameters * parametersDialog;
     tenduke::qt::demo::UserInfoWindow * userinfo;
 };
 

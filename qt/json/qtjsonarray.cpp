@@ -16,6 +16,7 @@ const
 }
 
 const std::vector<std::shared_ptr<xdjson::JSONElement>> & qtjson::QtJSONArray::getValues()
+const
 {
     return items;
 }

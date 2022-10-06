@@ -1,16 +1,20 @@
 #include "./testdefaultlicensing.h"
 
 #include "crypto/rsapublickeyfrompemstring.h"
+#include "crypto/publickeytopem.h"
 #include "http/libcurlhttpclient.h"
 #include "json/cjsonparser.h"
 #include "licensing/defaultlicensingclient.h"
 #include "licensing/licensecheckoutparametersbuilder.h"
+#include "oauth/oauthclientconfiguration.h"
 #include "oauth/oauthconfiguration.h"
+#include "oidc/autodiscovery.h"
 #include "oidc/createdefaultoidcclient.h"
 #include "oidc/oidcconfiguration.h"
 #include "oidc/oidcclient.h"
 #include "time/defaultclock.h"
 #include "utl/random/insecurerandombytes.h"
+#include "utl/defaultbase64decoder.h"
 
 #include <iostream>
 #include <string>
@@ -26,63 +30,65 @@ namespace xdoauth = tenduke::oauth;
 namespace xdoidc = tenduke::oauth::oidc;
 namespace xdrandom = tenduke::utl::random;
 namespace xdtime = tenduke::time;
+namespace xdutl = tenduke::utl;
 
-static std::string ID_TOKEN_VERIFICATION_KEY_RSA_PEM =
-        "-----BEGIN PUBLIC KEY-----\n"
-        "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAywVSSuHKmyNrcT8JArxo\n"
-        "IqTuWdCvG2R78p1Osdav8ivjQWqDnjR37tt7L+U+sopV4ka4gUQVi7Ie87l2cJwh\n"
-        "sJ6uAQWfp6K7r+H/yH+ak+F8EvcWLFNqRjbvgAu0MqSt16bkZX01AanBca3yioZ+\n"
-        "Ihe7DryKSbR1n8IMU7DRUiZzB4c9qdPphmDwxzryaiTkE1QJyXGjpSdvwwIdXE9u\n"
-        "XE12zSeR2+CRKWTPZsnRBKpSDdrEwE8nSRW5XmDppnpoAvb6YI7ULtXZN354atbH\n"
-        "sC1s+siHsjD7zB//cUzsRtge4YCTOoIs4thirizP3uXg8xJSs1Quie1GvZt0ufwl\n"
-        "jMQnbBR7Le1ctV7sCZFom4XJGewGpnXQP9TBBpofH1RhjmBBRyruvbX3xGj2mKpi\n"
-        "hy6k3FzoxZ580Pv1KGo1CYjLgfXFSmwnq/MJ6bE1wR9rmexOE1b2laWsTbTdpZB4\n"
-        "/3mHGQ1yd5w+7ZjOQ1/K0g5FHm5yKK9cJSvQihN/BpGN5YhvwkpjhAhJlF+csLg4\n"
-        "DGXl5GxnTfP1ZSUywOP2Da4PzpaghsDJpkBkh6rKDK+mJ9v0He1BfvhxIqAjVnur\n"
-        "IRZriZ6mXwTM7C9v30IBIgnadgLkyptuj+/1F3Z3m2+Ix6uLpZGUQpWVgMcC2uM5\n"
-        "kcU6rWjrfEfAVM23axgy7c0CAwEAAQ==\n"
-        "-----END PUBLIC KEY-----"
-;
+// IMPORTANT: Change following configuration items to match the deployment
+static const std::string HOST="https://genco.10duke.com";
+static const std::string OAUTH_CLIENT_ID = "QTDemo";
+static const std::string OAUTH_CLIENT_SECRET = "FQdL!XSYYrQ7-zeiCe";
+static const std::string OAUTH_CALLBACK_URI = "tenduke://callback";
+static const bool USE_PKCE = true;
+static const std::string LICENSED_ITEM_NAME = "qt-demo-item-1";
+static const std::string HARDWARE_ID = "hw-1";
 
-static std::unique_ptr<const xdcrypto::PublicKey> createPublicKey(std::string key)
+// Usually no need to change these
+static const std::string OIDC_AUTO_DISCOVERY_URL = HOST + "/.well-known/openid-configuration";
+static const std::string LICENSING_API_ENDPOINT = HOST + "/authz/";
+
+
+
+void tenduke::tst::licensing::testDefaultLicensingWithAutoDiscovery()
 {
-    if (key.empty()) {
-        return std::unique_ptr<const xdcrypto::PublicKey>();
-    }
-
-    // NOTE: This will throw CryptoException if the key is invalid.
-    return libcrypto::RSAPublicKeyFromPEMString().from(key);
-}
-
-
-void tenduke::tst::licensing::testDefaultLicensing()
-{
-    // Configuration:
-    std::shared_ptr<xdoauth::OAuthConfiguration> oauthConfig (new xdoauth::OAuthConfiguration(
-        "https://genco.10duke.com/user/oauth20/authz",
-        "https://genco.10duke.com/user/oauth20/token",
-        "QTDemo",
-        "FQdL!XSYYrQ7-zeiCe",
-        "tenduke://callback",
-        true
-    ));
-    std::shared_ptr<xdoidc::OIDCConfiguration> oidcConfig (new xdoidc::OIDCConfiguration(
-        "https://genco.10duke.com",
-        createPublicKey(ID_TOKEN_VERIFICATION_KEY_RSA_PEM)
-    ));
-
-
     //  Default services:
     std::shared_ptr<xdhttp::HTTPClient> httpClient (new xdcurlhttp::LibCurlHTTPClient());
     std::shared_ptr<xdjson::JSONParser> jsonParser (new xdcjson::cJSONParser());
     std::shared_ptr<xdtime::Clock> clock (new xdtime::DefaultClock());
     std::shared_ptr<xdrandom::RandomBytes> randomGenerator (new xdrandom::InsecureRandomBytes());
+    std::shared_ptr<xdutl::Base64Decoder> base64Decoder (new xdutl::DefaultBase64Decoder());
 
+    // Auto-discover OIDC backend configuration
+    xdoidc::AutoDiscovery oidcConfiguration(base64Decoder, httpClient, jsonParser);
+    xdoidc::AutoDiscoveryResult discoveredCfg = oidcConfiguration.discover(OIDC_AUTO_DISCOVERY_URL);
+
+    // IMPORTANT: This constructs the OIDC-backend configuration, INCLUDING the verification key
+    // The discovery result does not contain parsed verification key, but contains the JWKS-document instead.
+    std::shared_ptr<const xdoidc::OIDCConfiguration> discoveredOIDCCfg = oidcConfiguration.getOIDCConfiguration(discoveredCfg);
+    libcrypto::PublicKeyToPEM createPEM;
+
+    std::cout << "Auto discovered properties:" << std::endl;
+    std::cout << " - authorization endpoint: " << discoveredCfg.getOAuthConfiguration()->authorizationEndpointUrl << std::endl;
+    std::cout << " - token endpoint:         " << discoveredCfg.getOAuthConfiguration()->tokenEndpointUrl << std::endl;
+    std::cout << " - userinfo endpoint:      " << discoveredCfg.getOOIDCConfiguration()->userinfoEndpoint << std::endl;
+    std::cout << " - issuer:                 " << discoveredCfg.getOOIDCConfiguration()->issuer<< std::endl;
+    std::cout << " - verification key:" << std::endl;
+    std::cout << createPEM.from(*(discoveredOIDCCfg->verificationKey.get()));
+    std::cout << std::endl << std::endl;;
+
+    // Make the OAuth-config from the auto-discovered backend configuration plus the client configuration:
+    std::shared_ptr<const xdoauth::OAuthConfiguration> oauthConfig (new xdoauth::OAuthConfiguration(
+        *discoveredCfg.getOAuthConfiguration().get(),
+        xdoauth::OAuthClientConfiguration(
+            OAUTH_CLIENT_ID,
+            OAUTH_CLIENT_SECRET,
+            OAUTH_CALLBACK_URI,
+            USE_PKCE
+        )
+    ));
 
     // Do OIDC-login:
     std::unique_ptr<xdoidc::OIDCClient> oidcClient = xdoidc::createDefaultOIDCClient(
         oauthConfig,
-        oidcConfig,
+        discoveredOIDCCfg,
         httpClient,
         jsonParser,
         randomGenerator,
@@ -92,25 +98,27 @@ void tenduke::tst::licensing::testDefaultLicensing()
     std::unique_ptr<const xdoidc::OIDCRequest> oidcRequest = oidcClient->authenticate("profile email");
 
     std::cout << "Paste following URL to browser and navigate. Once the callback URL is navigated to, paste the " << std::endl;
-    std::cout << "complete callback-URL to this terminal and press enter" << std::endl;
-    std::cout << "Hint: Open dev-tools and preserve network log. In most cases you can find the callback-URL there." << std::endl;
-    std::cout << "If the callback URL is not shown as a failed request, find the last redirect-response (HTTP 302):" << std::endl;
-    std::cout << "the callback URL is value of response header \"Location\"" << std::endl;
+    std::cout << "complete callback-URL to this terminal and press enter." << std::endl << std::endl;
+    std::cout << "HINT: Before you paste the link, open dev-tools and preserve network log. In most cases you" << std::endl;
+    std::cout << "can find the callback-URL there. If the callback URL is not shown as a failed request, find" << std::endl;
+    std::cout << "the last redirect-response (HTTP 302): the callback URL is value of response header \"Location\"" << std::endl <<std::endl;
     std::cout << "****" << std::endl;
     std::cout << oidcRequest->buildAuthenticationRequestUrl() << std::endl;
-    std::cout << "****" << std::endl;
-    std::cout << "paste callback URL here:" << std::endl;
+    std::cout << "****" << std::endl << std::endl;
+    std::cout << "paste callback URL (starting with \"" << OAUTH_CALLBACK_URI << "\") here:" << std::endl;
 
     std::string callbackUrl;
     std::getline(std::cin, callbackUrl);
 
     std::unique_ptr<const xdoidc::OIDCState> oidcState = oidcRequest->handleCallback(callbackUrl);
 
+    std::cout << std::endl << "Login successful." << std::endl << std::endl;
+    std::cout << "Checking out licenses..." << std::endl << std::endl;
 
     // Login complete, checkout licenses:
     std::shared_ptr<xdlicensing::LicensingConfiguration> licensingConfiguration (new xdlicensing::LicensingConfiguration(
         oidcState->getAccessToken(),
-        "https://genco.10duke.com/authz/"
+        LICENSING_API_ENDPOINT
     ));
 
     std::unique_ptr<xdlicensing::LicensingClient> licenses (new xdlicensing::DefaultLicensingClient(
@@ -120,8 +128,8 @@ void tenduke::tst::licensing::testDefaultLicensing()
     ));
 
     std::unique_ptr<xdlicensing::LicenseCheckoutResponse> checkoutResponse = licenses->checkout(xdlicensing::LicenseCheckoutParametersBuilder()
-                       .hardwareId("hw-1")
-                       .item("qt-demo-item-1")
+                       .hardwareId(HARDWARE_ID)
+                       .item(LICENSED_ITEM_NAME)
                        .build()
     )->execute();
 
@@ -139,5 +147,3 @@ void tenduke::tst::licensing::testDefaultLicensing()
         std::cout << "   tecnical: " << failedItem.second.getErrorTechnical() << std::endl;
     }
 }
-
-

@@ -15,6 +15,7 @@ class OAuthException : public std::runtime_error
 public:
     enum Phase
     {
+        NONE,
         AUTHORIZATION,
         TOKEN_REQUEST,
         REFRESH_REQUEST

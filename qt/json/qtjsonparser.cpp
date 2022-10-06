@@ -26,7 +26,6 @@ static qtjson::QtJSONElement * buildElement(QJsonValue value);
 static qtjson::QtJSONArray * buildArray(QJsonArray array)
 {
     std::vector<std::shared_ptr<xdjson::JSONElement>> items;
-    int numItems = array.size();
 
     for (int i = 0, numItems = array.size(); i < numItems; i++) {
         items.push_back(std::shared_ptr<xdjson::JSONElement>(buildElement(array.at(i))));

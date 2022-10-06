@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+// IMPORTANT: This must match the scheme of the redirect-URI configured in the OAuth2-backend
+static const QByteArray CUSTOM_SCHEME = "tenduke";
+
 void handler(int sig) {
   void *array[50];
   size_t size;
@@ -28,7 +31,7 @@ int main(int argc, char *argv[])
     signal(SIGSEGV, handler);   // install our handler
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    std::shared_ptr<tenduke::qt::webengine::CustomSchemeHandler> schemeHandler (new tenduke::qt::webengine::CustomSchemeHandler("tenduke"));
+    std::shared_ptr<tenduke::qt::webengine::CustomSchemeHandler> schemeHandler (new tenduke::qt::webengine::CustomSchemeHandler(CUSTOM_SCHEME));
 
     QCoreApplication::setOrganizationName("10Duke SSO demo");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -48,7 +51,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("10Duke SSO demo");
 
     // Initialize and register the custom scheme handler.
-    std::shared_ptr<tenduke::qt::webengine::CustomSchemeHandler> schemeHandler (new tenduke::qt::webengine::CustomSchemeHandler("tenduke"));
+    std::shared_ptr<tenduke::qt::webengine::CustomSchemeHandler> schemeHandler (new tenduke::qt::webengine::CustomSchemeHandler(CUSTOM_SCHEME));
     schemeHandler->setup();
 #endif
 
@@ -68,7 +71,7 @@ int main(int argc, char *argv[])
 
 int main (int argc, char *argv[])
 {
-    tenduke::tst::licensing::testDefaultLicensing();
+    tenduke::tst::licensing::testDefaultLicensingWithAutoDiscovery();
 
     return 0;
 }

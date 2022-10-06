@@ -21,7 +21,7 @@ public:
     // Implementations
     virtual bool isEmpty() const override {return values->empty();}
     virtual size_t getSize() const override {return values->size();}
-    virtual const std::vector<std::shared_ptr<tenduke::json::JSONElement>> & getValues() override;
+    virtual const std::vector<std::shared_ptr<tenduke::json::JSONElement>> & getValues() const override;
 
 private:
     std::unique_ptr<std::vector<std::shared_ptr<tenduke::json::JSONElement>>> values;

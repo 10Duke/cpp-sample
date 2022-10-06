@@ -6,6 +6,7 @@
 #include "http/httpclient.h"
 #include "json/jsonparser.h"
 #include "oauth/oauthconfiguration.h"
+#include "oidc/autodiscovery.h"
 #include "oidc/oidcconfiguration.h"
 #include "oidc/oidcclient.h"
 #include "time/clock.h"
@@ -16,6 +17,7 @@
 
 namespace tenduke { namespace qt { namespace oidc {
 
+std::unique_ptr<const tenduke::oauth::oidc::AutoDiscovery> createAutoDiscovery(std::shared_ptr<tenduke::http::HTTPClient> httpClient);
 
 /** Factory method for creating QtOIDCClient.
  *
@@ -57,6 +59,7 @@ std::shared_ptr<tenduke::qt::oidc::QtOIDCClient> createOidcClient(
         std::shared_ptr<const tenduke::qt::oidc::QtOIDCConfig> oidcConfiguration,
         std::shared_ptr<tenduke::http::HTTPClient> httpClient
 );
+
 
 
 }}}

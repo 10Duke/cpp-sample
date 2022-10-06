@@ -100,6 +100,10 @@ tst/testdefaultlicensing.cpp):
 
 ### Authenticating the user with QT
 
+IMPORTANT: If you change the URL-scheme used in OAuth2 callback URI (when you configure the callback URI in
+the OAuth2-backend), remember to change the scheme in the source code to match the new scheme. See the
+constant `CUSTOM_SCHEME` in `main.cpp`.
+
 The QT-part uses QT WebEngine as embedded browser.
 
 The demo registers a custom URL-scheme "tenduke" to the WebEngine (see `main.cpp`). All the action happens via
@@ -289,7 +293,7 @@ sudo dnf install qt5-qtwebengine-devel
 # dependencies:
 sudo dnf install \
   cjson-devel \
-  libcrypto-devel \
+  openssl-devel \
   libcurl-devel
 ```
 

@@ -1,7 +1,8 @@
 #ifndef OAUTHCONFIGURATION_H
 #define OAUTHCONFIGURATION_H
 
-#include "crypto/publickey.h"
+#include "./oauthbackendconfiguration.h"
+#include "./oauthclientconfiguration.h"
 
 #include <memory>
 #include <string>
@@ -12,7 +13,7 @@ namespace tenduke { namespace oauth {
 /** Container for OAuth-configuration.
  *
  */
-class OAuthConfiguration
+class OAuthConfiguration : public OAuthBackendConfiguration, public OAuthClientConfiguration
 {
 public:
     OAuthConfiguration(
@@ -22,10 +23,18 @@ public:
             const std::string clientSecret,
             const std::string redirectURI,
             bool usePKCE
-    ) : authorizationEndpointUrl(authorizationEndpointUrl), tokenEndpointUrl(tokenEndpointUrl),
-        clientId(clientId), clientSecret(clientSecret), redirectURI(redirectURI), usePKCE(usePKCE)
+    ) : OAuthBackendConfiguration(authorizationEndpointUrl, tokenEndpointUrl),
+        OAuthClientConfiguration(clientId, clientSecret, redirectURI, usePKCE)
     {}
 
+    OAuthConfiguration(
+            const OAuthBackendConfiguration &backendConfiguration,
+            const OAuthClientConfiguration &clientConfiguration
+    ) : OAuthBackendConfiguration(backendConfiguration),
+        OAuthClientConfiguration(clientConfiguration)
+    {}
+
+/*
     const std::string authorizationEndpointUrl;
     const std::string tokenEndpointUrl;
 
@@ -34,6 +43,7 @@ public:
     const std::string redirectURI;
 
     const bool usePKCE;
+*/
 };
 
 

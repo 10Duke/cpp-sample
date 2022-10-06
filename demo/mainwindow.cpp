@@ -15,6 +15,7 @@ namespace qtlic = tenduke::qt::licensing;
 namespace qtoauth = tenduke::qt::oauth;
 namespace qtoidc = tenduke::qt::oidc;
 namespace xdhttp = tenduke::http;
+namespace xdoidc= tenduke::oauth::oidc;
 
 
 qtdemo::MainWindow::MainWindow(
@@ -70,14 +71,20 @@ void qtdemo::MainWindow::openParametersDialog()
         return;
     }
 
-    parametersDialog = new qtdemo::DemoParametersDialog(this);
+    //parametersDialog = new qtdemo::DemoParametersDialog(this);
+    parametersDialog = new qtdemo::AutoDiscoveredParameters(
+        qtoidc::createAutoDiscovery(httpClient),
+        this
+    );
 
     QObject::connect(
-            parametersDialog, &qtdemo::DemoParametersDialog::parametersCollected,
+            //parametersDialog, &qtdemo::DemoParametersDialog::parametersCollected,
+            parametersDialog, &qtdemo::AutoDiscoveredParameters::parametersCollected,
             this, &qtdemo::MainWindow::parametersReady
     );
     QObject::connect(
-            parametersDialog, &qtdemo::DemoParametersDialog::closed,
+            //parametersDialog, &qtdemo::DemoParametersDialog::closed,
+            parametersDialog, &qtdemo::AutoDiscoveredParameters::closed,
             this, &qtdemo::MainWindow::closeAndRemoveParametersDialog
     );
 
