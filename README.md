@@ -61,17 +61,43 @@ tst/testdefaultlicensing.cpp):
 
 ...
   //  Default services needed:
-  std::shared_ptr<tenduke::http::HTTPClient> httpClient (new tenduke::http::curl::LibCurlHTTPClient());
-  std::shared_ptr<tenduke::json::JSONParser> jsonParser (new tenduke::json::cjson::cJSONParser());
-  std::shared_ptr<tenduke::time::Clock> clock (new tenduke::time::DefaultClock());
-  std::shared_ptr<tenduke::utl::random::RandomBytes> randomGenerator (new tenduke::utl::random::InsecureRandomBytes());
+  std::shared_ptr<xdhttp::HTTPClient> httpClient (new xdcurlhttp::LibCurlHTTPClient());
+  std::shared_ptr<xdjson::JSONParser> jsonParser (new xdcjson::cJSONParser());
+  std::shared_ptr<xdtime::Clock> clock (new xdtime::DefaultClock());
+  std::shared_ptr<xdrandom::RandomBytes> randomGenerator (new xdrandom::InsecureRandomBytes());
+  std::shared_ptr<xdutl::Base64Decoder> base64Decoder (new xdutl::DefaultBase64Decoder());
+
+  // Auto-discover OIDC backend configuration
+  xdoidc::AutoDiscovery oidcConfiguration(base64Decoder, httpClient, jsonParser);
+  xdoidc::AutoDiscoveryResult discoveredCfg = oidcConfiguration.discover(OIDC_AUTO_DISCOVERY_URL);
+  std::shared_ptr<const xdoidc::OIDCConfiguration> discoveredOIDCCfg = oidcConfiguration.getOIDCConfiguration(discoveredCfg);
+  
+  // Construct JWT parser
+  std::shared_ptr<const xdjwt::JWTParser> jwtParser = xdjwt::createJWTParser(
+      discoveredOIDCCfg->algorithm,
+      discoveredOIDCCfg->verificationKey,
+      base64Decoder,
+      jsonParser
+  );
+  
+  // Make the OAuth-config from the auto-discovered backend configuration plus the client configuration:
+  std::shared_ptr<const xdoauth::OAuthConfiguration> oauthConfig (new xdoauth::OAuthConfiguration(
+      *discoveredCfg.getOAuthConfiguration().get(),
+      xdoauth::OAuthClientConfiguration(
+          OAUTH_CLIENT_ID,          // fill-in the OAuth client id set configured with the OAuth provider
+          OAUTH_CLIENT_SECRET,      // fill-in the OAuth client secret configured with the OAuth provider
+          OAUTH_CALLBACK_URI,       // fill-in the OAuth redirect-URI configured with the OAuth provider
+          true                      // use PKCE
+      )
+  ));
 
   // Create OIDC-client:
   std::unique_ptr<tenduke::oauth::oidc::OIDCClient> oidcClient = tenduke::oauth::oidc::createDefaultOIDCClient(
-      oauthConfig,        // setup the OAuth-configuration
-      oidcConfig,         // setup the OIDC-configuration
+      oauthConfig,
+      discoveredOIDCCfg
       httpClient,
       jsonParser,
+      jwtParser,
       randomGenerator,
       clock
   );
@@ -202,11 +228,11 @@ Complete example in `tst/testdefaultlicensing.cpp`.
     ));
 
     // Create the licensing client
-    // You can reuse the HTTPClient and JSONParser created earlier
-    std::unique_ptr<tenduke::licensing::LicensingClient> licenses (new tenduke::licensing::DefaultLicensingClient(
+    // You can reuse the HTTPClient and JWTParser created earlier
+    std::unique_ptr<xdlicensing::LicensingClient> licenses (new xdlicensing::DefaultLicensingClient(
         licensingConfiguration,
         httpClient,
-        jsonParser
+        jwtParser
     ));
 
     // Checkout the licenses
@@ -241,16 +267,21 @@ Complete example in `tst/testdefaultlicensing.cpp`.
 ```c++
     // Setup the licensing parameters
     tenduke::qt::licensing::QtLicensingConfiguration licensingConfiguration (
-        QUrl("https://genco.10duke.com/authz/"),      // This is the licensing endpoint provided to you by 10Duke
-        "abc"                                         // Hardware ID: Uniquely identifies this piece of hardware
+        QUrl("https://genco.10duke.com/authz/"),    // This is the licensing endpoint provided to you by 10Duke
+        "abc"                                       // Hardware ID: Uniquely identifies this piece of hardware
     );
 
-    std::unique_ptr<tenduke::qt::licensing::QtLicensingClient> licensingClient = tenduke::qt::licensing::createQtLicensingClient(
-        &licensingConfiguration,
-        oidcState->getAccessToken(),        // access token from the successful login result
-        httpClient                          // can be the same as what was used with OIDCClient
+    std::unique_ptr<const xdjwt::JWTParser> jwtParser = qtjwt::createQtJWTParser(
+        "sha256",
+        oidcParameters->verificationKey
     );
-  
+    licenses = qtlic::createQtLicensingClient(
+        *(licensingParameters.get()),
+        oidcState->getAccessToken().toStdString(),  // access token from the successful login result
+        httpClient,                                 // can be the same as what was used with OIDCClient        
+        std::move(jwtParser)
+    );
+
     // Create the checkout request:
     auto request = license->checkout("qt-demo-item-1");
     
