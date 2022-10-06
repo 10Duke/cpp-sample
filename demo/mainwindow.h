@@ -63,7 +63,7 @@ private:
     std::shared_ptr<tenduke::qt::oidc::QtOIDCState> oidcState;
     const std::shared_ptr<tenduke::qt::webengine::CustomSchemeHandler> schemeHandler;
     const std::shared_ptr<QNetworkAccessManager> networkAccessManager;
-    const std::shared_ptr<tenduke::http::HTTPClient> httpClient;
+    const std::shared_ptr<const tenduke::http::HTTPClient> httpClient;
     std::shared_ptr<tenduke::qt::oidc::QtOIDCClient> oidc;
     std::shared_ptr<tenduke::qt::licensing::QtLicensingClient> licenses;
 

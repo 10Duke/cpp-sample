@@ -3,6 +3,7 @@
 #include "crypto/rsapublickeyfrompemstring.h"
 #include "http/libcurlhttpclient.h"
 #include "json/cjsonparser.h"
+#include "jwt/createjwtparser.h"
 #include "licensing/defaultlicensingclient.h"
 #include "licensing/licensecheckoutparametersbuilder.h"
 #include "oauth/oauthconfiguration.h"
@@ -11,6 +12,7 @@
 #include "oidc/oidcclient.h"
 #include "time/defaultclock.h"
 #include "utl/random/insecurerandombytes.h"
+#include "utl/defaultbase64decoder.h"
 
 #include <iostream>
 #include <string>
@@ -21,11 +23,13 @@ namespace xdcrypto = tenduke::crypto;
 namespace xdcurlhttp = tenduke::http::curl;
 namespace xdhttp = tenduke::http;
 namespace xdjson = tenduke::json;
+namespace xdjwt = tenduke::jwt;
 namespace xdlicensing = tenduke::licensing;
 namespace xdoauth = tenduke::oauth;
 namespace xdoidc = tenduke::oauth::oidc;
 namespace xdrandom = tenduke::utl::random;
 namespace xdtime = tenduke::time;
+namespace xdutl = tenduke::utl;
 
 static std::string ID_TOKEN_VERIFICATION_KEY_RSA_PEM =
         "-----BEGIN PUBLIC KEY-----\n"
@@ -73,11 +77,17 @@ void tenduke::tst::licensing::testDefaultLicensing()
     ));
 
     //  Default services:
-    std::shared_ptr<xdhttp::HTTPClient> httpClient (new xdcurlhttp::LibCurlHTTPClient());
-    std::shared_ptr<xdjson::JSONParser> jsonParser (new xdcjson::cJSONParser());
+    std::shared_ptr<const xdhttp::HTTPClient> httpClient (new xdcurlhttp::LibCurlHTTPClient());
+    std::shared_ptr<const xdjson::JSONParser> jsonParser (new xdcjson::cJSONParser());
     std::shared_ptr<xdtime::Clock> clock (new xdtime::DefaultClock());
     std::shared_ptr<xdrandom::RandomBytes> randomGenerator (new xdrandom::InsecureRandomBytes());
-
+    std::shared_ptr<xdutl::Base64Decoder> base64Decoder (new xdutl::DefaultBase64Decoder());
+    std::shared_ptr<const xdjwt::JWTParser> jwtParser = xdjwt::createJWTParser(
+        oidcConfig->algorithm,
+        oidcConfig->verificationKey,
+        base64Decoder,
+        jsonParser
+    );
 
     // Do OIDC-login:
     std::unique_ptr<xdoidc::OIDCClient> oidcClient = xdoidc::createDefaultOIDCClient(
@@ -85,6 +95,7 @@ void tenduke::tst::licensing::testDefaultLicensing()
         oidcConfig,
         httpClient,
         jsonParser,
+        jwtParser,
         randomGenerator,
         clock
     );
@@ -116,7 +127,7 @@ void tenduke::tst::licensing::testDefaultLicensing()
     std::unique_ptr<xdlicensing::LicensingClient> licenses (new xdlicensing::DefaultLicensingClient(
         licensingConfiguration,
         httpClient,
-        jsonParser
+        jwtParser
     ));
 
     std::unique_ptr<xdlicensing::LicenseCheckoutResponse> checkoutResponse = licenses->checkout(xdlicensing::LicenseCheckoutParametersBuilder()

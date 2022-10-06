@@ -3,6 +3,7 @@
 #include "./logindialog.h"
 
 #include "qt/http/createqthttpclient.h"
+#include "qt/jwt/createqtjwtparser.h"
 #include "qt/licensing/createqtlicensingclient.h"
 #include "qt/oidc/createqtoidcclient.h"
 
@@ -11,10 +12,12 @@
 
 namespace qtdemo = tenduke::qt::demo;
 namespace qthttp = tenduke::qt::http;
+namespace qtjwt = tenduke::qt::jwt;
 namespace qtlic = tenduke::qt::licensing;
 namespace qtoauth = tenduke::qt::oauth;
 namespace qtoidc = tenduke::qt::oidc;
 namespace xdhttp = tenduke::http;
+namespace xdjwt = tenduke::jwt;
 namespace xdoidc= tenduke::oauth::oidc;
 
 
@@ -174,10 +177,15 @@ void qtdemo::MainWindow::loginSuccessful(qtoidc::QtOIDCState state)
         );
     }
 
+    std::unique_ptr<const xdjwt::JWTParser> jwtParser = qtjwt::createQtJWTParser(
+        "sha256",
+        oidcParameters->verificationKey
+    );
     licenses = qtlic::createQtLicensingClient(
         *(licensingParameters.get()),
         oidcState->getAccessToken().toStdString(),
-        httpClient
+        httpClient,
+        std::move(jwtParser)
     );
 
     // Bind signals. These are emitted from access-token refresh:

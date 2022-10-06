@@ -5,7 +5,7 @@
 #include "./licensingconfiguration.h"
 
 #include "http/httpclient.h"
-#include "json/jsonparser.h"
+#include "jwt/jwtparser.h"
 
 namespace tenduke { namespace licensing {
 
@@ -18,8 +18,8 @@ class DefaultLicensingClient : public LicensingClient
 public:
     DefaultLicensingClient(
             std::shared_ptr<LicensingConfiguration> configuration,
-            std::shared_ptr<tenduke::http::HTTPClient> httpClient,
-            std::shared_ptr<tenduke::json::JSONParser> jsonParser
+            std::shared_ptr<const tenduke::http::HTTPClient> httpClient,
+            std::shared_ptr<const tenduke::jwt::JWTParser> jwtParser
     );
     virtual ~DefaultLicensingClient() {}
 
@@ -28,8 +28,8 @@ public:
 
 private:
     const std::shared_ptr<const LicensingConfiguration> configuration;
-    const std::shared_ptr<tenduke::http::HTTPClient> httpClient;
-    const std::shared_ptr<tenduke::json::JSONParser> jsonParser;
+    const std::shared_ptr<const tenduke::http::HTTPClient> httpClient;
+    const std::shared_ptr<const tenduke::jwt::JWTParser> jwtParser;
 };
 
 

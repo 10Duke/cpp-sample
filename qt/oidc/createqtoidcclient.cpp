@@ -2,7 +2,8 @@
 
 #include "crypto/asymmetricmessagedigestfactory.h"
 #include "crypto/rsapublickeyfrompemstring.h"
-#include "jwt/defaultjwtparser.h"
+#include "jwt/createjwtparser.h"
+#include "jwt/jwtparser.h"
 #include "jwt/fixedkeyjwtsignaturevalidator.h"
 #include "oauth/oauthpkceflow.h"
 #include "time/defaultclock.h"
@@ -18,20 +19,20 @@
 namespace crypto = tenduke::crypto;
 namespace libcrypto = tenduke::crypto::libcrypto;
 namespace http = tenduke::http;
-namespace jwt = tenduke::jwt;
 namespace qtnet = tenduke::qt::net;
 namespace qtoidc = tenduke::qt::oidc;
 namespace qtutl = tenduke::qt::utl;
 namespace qtjson = tenduke::qt::json;
 namespace rnd = tenduke::utl::random;
 namespace xdjson = tenduke::json;
+namespace xdjwt = tenduke::jwt;
 namespace xdnet = tenduke::net;
 namespace xdoauth = tenduke::oauth;
 namespace xdoidc = tenduke::oauth::oidc;
 namespace xdutl = tenduke::utl;
 namespace xdtime = tenduke::time;
 
-std::unique_ptr<const tenduke::oauth::oidc::AutoDiscovery> qtoidc::createAutoDiscovery(std::shared_ptr<tenduke::http::HTTPClient> httpClient)
+std::unique_ptr<const tenduke::oauth::oidc::AutoDiscovery> qtoidc::createAutoDiscovery(std::shared_ptr<const tenduke::http::HTTPClient> httpClient)
 {
     return std::unique_ptr<const xdoidc::AutoDiscovery>(new xdoidc::AutoDiscovery(
         std::shared_ptr<const xdutl::Base64Decoder>(new qtutl::QtBase64Decoder()),
@@ -42,10 +43,10 @@ std::unique_ptr<const tenduke::oauth::oidc::AutoDiscovery> qtoidc::createAutoDis
 
 
 std::unique_ptr<qtoidc::QtOIDCClient> qtoidc::createQtOIDCClient(
-    std::shared_ptr<xdoauth::OAuthConfiguration> oauthConfiguration,
-    std::shared_ptr<xdoidc::OIDCConfiguration> oidcConfiguration,
-    std::shared_ptr<http::HTTPClient> httpClient,
-    std::shared_ptr<xdjson::JSONParser> jsonParser,
+    std::shared_ptr<const xdoauth::OAuthConfiguration> oauthConfiguration,
+    std::shared_ptr<const xdoidc::OIDCConfiguration> oidcConfiguration,
+    std::shared_ptr<const http::HTTPClient> httpClient,
+    std::shared_ptr<const xdjson::JSONParser> jsonParser,
     std::shared_ptr<xdtime::Clock> clock
 ) {
     // Lots of services used intentionally: These enable customization, library-specific implementations and (hopefully) easier testing.
@@ -67,16 +68,12 @@ std::unique_ptr<qtoidc::QtOIDCClient> qtoidc::createQtOIDCClient(
     ));
 
     // JWT-parsing:
-    std::shared_ptr<const crypto::MessageDigestVerifierFactory> digestFactory(new libcrypto::AsymmetricMessageDigestFactory(
+    std::shared_ptr<const xdjwt::JWTParser> jwtParser = xdjwt::createJWTParser(
         oidcConfiguration->algorithm,
-        oidcConfiguration->verificationKey
-    ));
-    std::shared_ptr<const jwt::JWTSignatureValidator> jwtSignatureValidator (new jwt::FixedKeyJWTSignatureValidator(digestFactory));
-    std::shared_ptr<const jwt::JWTParser> jwtParser (new jwt::DefaultJWTParser(
-        jsonParser,
+        oidcConfiguration->verificationKey,
         base64Decoder,
-        jwtSignatureValidator
-    ));
+        jsonParser
+    );
 
     std::shared_ptr<xdoidc::OIDCClient> oidcClient = std::shared_ptr<xdoidc::OIDCClient>(new xdoidc::OIDCClient(
         oidcConfiguration,
@@ -91,9 +88,9 @@ std::unique_ptr<qtoidc::QtOIDCClient> qtoidc::createQtOIDCClient(
 }
 
 std::unique_ptr<qtoidc::QtOIDCClient> qtoidc::createQtOIDCClient(
-    std::shared_ptr<xdoauth::OAuthConfiguration> oauthConfiguration,
-    std::shared_ptr<xdoidc::OIDCConfiguration> oidcConfiguration,
-    std::shared_ptr<http::HTTPClient> httpClient
+    std::shared_ptr<const xdoauth::OAuthConfiguration> oauthConfiguration,
+    std::shared_ptr<const xdoidc::OIDCConfiguration> oidcConfiguration,
+    std::shared_ptr<const http::HTTPClient> httpClient
 ) {
     return qtoidc::createQtOIDCClient(
         oauthConfiguration,
@@ -116,7 +113,7 @@ static std::unique_ptr<const crypto::PublicKey> createPublicKey(QString key)
 
 std::shared_ptr<qtoidc::QtOIDCClient> qtoidc::createOidcClient(
         std::shared_ptr<const qtoidc::QtOIDCConfig> oidcConfiguration,
-        std::shared_ptr<http::HTTPClient> httpClient
+        std::shared_ptr<const http::HTTPClient> httpClient
 ) {
     // Construct public key:
     std::unique_ptr<const crypto::PublicKey> idTokenValidationKey = createPublicKey(oidcConfiguration->verificationKey);

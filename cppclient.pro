@@ -55,6 +55,7 @@ SOURCES += \
     json/cjsonparser.cpp \
     json/jsonutils.cpp \
     jwks/jwkstopublickey.cpp \
+    jwt/createjwtparser.cpp \
     jwt/defaultjwtparser.cpp \
     jwt/fixedkeyjwtsignaturevalidator.cpp \
     jwt/jwt.cpp \
@@ -88,6 +89,7 @@ SOURCES += \
     qt/json/qtjsonobject.cpp \
     qt/json/qtjsonparser.cpp \
     qt/json/qtjsonprimitive.cpp \
+    qt/jwt/createqtjwtparser.cpp \
     qt/licensing/createqtlicensingclient.cpp \
     qt/licensing/qtlicensecheckoutrequest.cpp \
     qt/licensing/qtlicensingclient.cpp \
@@ -171,6 +173,7 @@ HEADERS += \
     json/jsonutils.h \
     jwks/jwksexception.h \
     jwks/jwkstopublickey.h \
+    jwt/createjwtparser.h \
     jwt/defaultjwtparser.h \
     jwt/fixedkeyjwtsignaturevalidator.h \
     jwt/jwt.h \
@@ -239,6 +242,7 @@ HEADERS += \
     qt/json/qtjsonparser.h \
     qt/json/qtjsonprimitive.h \
     qt/json/qtjsonstring.h \
+    qt/jwt/createqtjwtparser.h \
     qt/licensing/createqtlicensingclient.h \
     qt/licensing/qtlicensecheckoutrequest.h \
     qt/licensing/qtlicensingclient.h \

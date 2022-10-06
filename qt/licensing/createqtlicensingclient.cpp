@@ -2,20 +2,20 @@
 
 #include "licensing/defaultlicensingclient.h"
 #include "qt/http/createqthttpclient.h"
-#include "qt/json/qtjsonparser.h"
+#include "qt/jwt/createqtjwtparser.h"
 
-namespace qtjson = tenduke::qt::json;
-namespace qtlic = tenduke::qt::licensing;
 namespace qthttp = tenduke::qt::http;
+namespace qtlic = tenduke::qt::licensing;
+namespace qtjwt = tenduke::qt::jwt;
 namespace xdhttp = tenduke::http;
-namespace xdjson = tenduke::json;
+namespace xdjwt = tenduke::jwt;
 namespace xdlic = tenduke::licensing;
 
 std::unique_ptr<qtlic::QtLicensingClient> qtlic::createQtLicensingClient(
         const qtlic::QtLicensingConfiguration &configuration,
         const std::string & accessToken,
-        std::shared_ptr<xdhttp::HTTPClient> httpClient,
-        std::shared_ptr<tenduke::json::JSONParser> jsonParser
+        std::shared_ptr<const xdhttp::HTTPClient> httpClient,
+        std::shared_ptr<const tenduke::jwt::JWTParser> jwtParser
 )
 {
     std::shared_ptr<xdlic::LicensingConfiguration> config(new xdlic::LicensingConfiguration(
@@ -26,7 +26,7 @@ std::unique_ptr<qtlic::QtLicensingClient> qtlic::createQtLicensingClient(
     std::shared_ptr<xdlic::LicensingClient> licensingClient(new xdlic::DefaultLicensingClient(
         config,
         httpClient,
-        jsonParser
+        jwtParser
     ));
 
     return std::unique_ptr<qtlic::QtLicensingClient>(new qtlic::QtLicensingClient(
@@ -39,26 +39,14 @@ std::unique_ptr<qtlic::QtLicensingClient> qtlic::createQtLicensingClient(
 std::unique_ptr<qtlic::QtLicensingClient> qtlic::createQtLicensingClient(
         const qtlic::QtLicensingConfiguration &configuration,
         const std::string & accessToken,
-        std::shared_ptr<xdhttp::HTTPClient> httpClient
+        std::shared_ptr<QNetworkAccessManager> networkAccessManager,
+        std::shared_ptr<const tenduke::jwt::JWTParser> jwtParser
 )
 {
     return qtlic::createQtLicensingClient(
         configuration,
         accessToken,
-        httpClient,
-        std::shared_ptr<xdjson::JSONParser>(new qtjson::QtJSONParser())
-    );
-}
-
-std::unique_ptr<qtlic::QtLicensingClient> qtlic::createQtLicensingClient(
-        const qtlic::QtLicensingConfiguration &configuration,
-        const std::string & accessToken,
-        std::shared_ptr<QNetworkAccessManager> networkAccessManager
-)
-{
-    return qtlic::createQtLicensingClient(
-        configuration,
-        accessToken,
-        qthttp::createQtHTTPClient(networkAccessManager)
+        qthttp::createQtHTTPClient(networkAccessManager),
+        jwtParser
     );
 }

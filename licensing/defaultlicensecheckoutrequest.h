@@ -8,7 +8,7 @@
 
 #include "http/httpclient.h"
 #include "http/httpstatuscodetoexception.h"
-#include "json/jsonparser.h"
+#include "jwt/jwtparser.h"
 
 #include <memory>
 #include <string>
@@ -24,8 +24,8 @@ class DefaultLicenseCheckoutRequest : public LicenseCheckoutRequest
 {
 public:
     DefaultLicenseCheckoutRequest(
-        std::shared_ptr<tenduke::json::JSONParser> jsonParser,
-        std::shared_ptr<tenduke::http::HTTPClient> httpClient,
+        std::shared_ptr<const tenduke::jwt::JWTParser> jwtParser,
+        std::shared_ptr<const tenduke::http::HTTPClient> httpClient,
         std::shared_ptr<const tenduke::licensing::LicensingConfiguration> config,
         std::unique_ptr<const tenduke::licensing::LicenseCheckoutParameters> params
     );
@@ -38,8 +38,8 @@ protected:
     virtual std::unique_ptr<tenduke::licensing::LicenseCheckoutResponse> parseResponsePayload(const std::string &payload);
 
 private:
-    const std::shared_ptr<tenduke::json::JSONParser> parseResponse;
-    const std::shared_ptr<tenduke::http::HTTPClient> http;
+    const std::shared_ptr<const tenduke::jwt::JWTParser> parseJWT;
+    const std::shared_ptr<const tenduke::http::HTTPClient> http;
     const std::shared_ptr<const tenduke::licensing::LicensingConfiguration> config;
     const std::unique_ptr<const tenduke::licensing::LicenseCheckoutParameters> params;
     const std::shared_ptr<const tenduke::http::HTTPStatusCodeToException> throwException;

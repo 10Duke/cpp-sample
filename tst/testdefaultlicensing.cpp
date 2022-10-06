@@ -4,6 +4,7 @@
 #include "crypto/publickeytopem.h"
 #include "http/libcurlhttpclient.h"
 #include "json/cjsonparser.h"
+#include "jwt/createjwtparser.h"
 #include "licensing/defaultlicensingclient.h"
 #include "licensing/licensecheckoutparametersbuilder.h"
 #include "oauth/oauthclientconfiguration.h"
@@ -25,6 +26,7 @@ namespace xdcrypto = tenduke::crypto;
 namespace xdcurlhttp = tenduke::http::curl;
 namespace xdhttp = tenduke::http;
 namespace xdjson = tenduke::json;
+namespace xdjwt = tenduke::jwt;
 namespace xdlicensing = tenduke::licensing;
 namespace xdoauth = tenduke::oauth;
 namespace xdoidc = tenduke::oauth::oidc;
@@ -74,6 +76,14 @@ void tenduke::tst::licensing::testDefaultLicensingWithAutoDiscovery()
     std::cout << createPEM.from(*(discoveredOIDCCfg->verificationKey.get()));
     std::cout << std::endl << std::endl;;
 
+    // JWT-parser. We reuse this in the OIDC-client and in the licensing client
+    std::shared_ptr<const xdjwt::JWTParser> jwtParser = xdjwt::createJWTParser(
+        discoveredOIDCCfg->algorithm,
+        discoveredOIDCCfg->verificationKey,
+        base64Decoder,
+        jsonParser
+    );
+
     // Make the OAuth-config from the auto-discovered backend configuration plus the client configuration:
     std::shared_ptr<const xdoauth::OAuthConfiguration> oauthConfig (new xdoauth::OAuthConfiguration(
         *discoveredCfg.getOAuthConfiguration().get(),
@@ -91,6 +101,7 @@ void tenduke::tst::licensing::testDefaultLicensingWithAutoDiscovery()
         discoveredOIDCCfg,
         httpClient,
         jsonParser,
+        jwtParser,
         randomGenerator,
         clock
     );
@@ -124,11 +135,11 @@ void tenduke::tst::licensing::testDefaultLicensingWithAutoDiscovery()
     std::unique_ptr<xdlicensing::LicensingClient> licenses (new xdlicensing::DefaultLicensingClient(
         licensingConfiguration,
         httpClient,
-        jsonParser
+        jwtParser
     ));
 
     std::unique_ptr<xdlicensing::LicenseCheckoutResponse> checkoutResponse = licenses->checkout(xdlicensing::LicenseCheckoutParametersBuilder()
-                       .hardwareId(HARDWARE_ID)
+                       .hardwareId("hw-1")
                        .item(LICENSED_ITEM_NAME)
                        .build()
     )->execute();
