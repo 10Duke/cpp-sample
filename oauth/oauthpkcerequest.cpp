@@ -123,12 +123,15 @@ const
 
     parameters["grant_type"] = "authorization_code";
     parameters["client_id"] = config->clientId;
-    parameters["client_secret"] = config->clientSecret;
     parameters["redirect_uri"] = config->redirectURI;
     parameters["code"] = code;
 
     if (isPKCERequest()) {
         parameters["code_verifier"] = codeVerifier;
+    }
+
+    if (!config->clientSecret.empty()) {
+        parameters["client_secret"] = config->clientSecret;
     }
 
     return parameters;
