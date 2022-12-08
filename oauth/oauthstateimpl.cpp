@@ -59,8 +59,11 @@ const
 
     parameters["grant_type"] = "refresh_token";
     parameters["client_id"] = config->clientId;
-    parameters["client_secret"] = config->clientSecret;
     parameters["refresh_token"] = refreshToken;
+
+    if (!config->clientSecret.empty()) {
+        parameters["client_secret"] = config->clientSecret;
+    }
 
     return parameters;
 }
