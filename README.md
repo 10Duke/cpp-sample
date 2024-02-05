@@ -1,5 +1,5 @@
 # THIS REPOSITORY IS DEPRECATED
-You can find 10Duke Enterprise Licensing client in our [public Gitlab](https://gitlab.com/10Duke/enterprise/cpp/licensing-client). 
+10Duke publishes and maintains a new SDK for C++ which you can find in our [public Gitlab](https://gitlab.com/10Duke/enterprise/cpp/licensing-client). 
 
 # C++ / QT-demo for 10Duke licensing
 
