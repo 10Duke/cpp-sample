@@ -1,3 +1,6 @@
+# THIS REPOSITORY IS DEPRECATED
+You can find 10Duke Enterprise Licensing client in our [public Gitlab](https://gitlab.com/10Duke/enterprise/cpp/licensing-client). 
+
 # C++ / QT-demo for 10Duke licensing
 
 This is a C++-based demo, which handles user login and license checkout.
